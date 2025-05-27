@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Prediction</title>
+</head>
+<body>
+    <h2>TV Ad Spend to Sales Prediction</h2>
+    <form method="POST" action="/predict">
+        TV Spend: <input type="number" name="tv" step="0.1" required>
+        <input type="submit" value="Predict">
+    </form>
+    <h3>{{ prediction_text }}</h3>
+</body>
+</html>
