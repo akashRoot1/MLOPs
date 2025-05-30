@@ -17,6 +17,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run Training
-        run: python model/train.py
+        run: python app/model/train.py
       - name: Run Tests
-        run: python model/test_train.py
+        run: python app/model/test_train.py
