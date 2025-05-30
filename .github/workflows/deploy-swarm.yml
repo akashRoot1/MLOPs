@@ -1,35 +1,39 @@
-name: CI/CD Docker Swarm Deploy
+name: ML Pipeline CI/CD
 
 on:
   push:
     branches:
-      - main  # Trigger on pushes to main branch
+      - main
+  pull_request:
 
 jobs:
-  build_test_push_deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Python
+    - name: Set up Python 3.9
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: 3.9
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run training script
-      run: python model/train.py
+    - name: Run ingestion/preprocessing script
+      run: python scripts/ingest_preprocess.py
 
-    - name: Run tests
-      run: python model/test_train.py
+    - name: Run model retraining script
+      run: python scripts/retrain_model.py
 
-    - name: Login to Docker Hub
+    - name: Run unit tests
+      run: pytest tests/
+
+    - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
@@ -41,12 +45,12 @@ jobs:
     - name: Push Docker image
       run: docker push akashv1212/flask-ml-app:latest
 
-    - name: Deploy to Docker Swarm
+    - name: Deploy to Docker Swarm via SSH
       uses: appleboy/ssh-action@v0.1.6
       with:
-        host: ${{ secrets.SWARM_HOST }}
-        username: ${{ secrets.SWARM_USER }}
-        key: ${{ secrets.SWARM_SSH_KEY }}
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          docker service update --image akashv1212/flask-ml-app:latest flask-ml-app || \
-          docker service create --name flask-ml-app -p 80:80 akashv1212/flask-ml-app:latest
+          docker service update --image yourdockerhubusername/flask-ml-app:latest flask-ml-app || \
+          docker stack deploy -c docker-compose.yml flask-ml-stack
