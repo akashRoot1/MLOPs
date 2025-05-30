@@ -27,22 +27,11 @@ jobs:
       run: |
         docker push akashv1212/flask-ml-app:latest
 
-    - name: SSH to Swarm Manager and update service
+    - name: Deploy to Docker Swarm via SSH
       uses: appleboy/ssh-action@v0.1.7
       with:
         host: ${{ secrets.SWARM_HOST }}
-        username: ${{ secrets.SSH_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        username: ${{ secrets.SWARM_USER }}
+        key: ${{ secrets.SWARM_SSH_KEY }}
         script: |
           docker service update --image akashv1212/flask-ml-app:latest flask-ml-app
-
-    - name: Set up SSH key
-      run: |
-       mkdir -p ~/.ssh
-       echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-       chmod 600 ~/.ssh/id_rsa
-       ssh-keyscan <server-ip> >> ~/.ssh/known_hosts
-
-    - name: Test SSH Connection
-      run: ssh -o StrictHostKeyChecking=no akashvikram98@your.server.ip.address "echo Connected!"
-
