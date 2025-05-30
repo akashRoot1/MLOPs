@@ -35,3 +35,14 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           docker service update --image akashv1212/flask-ml-app:latest flask-ml-app
+
+    - name: Set up SSH key
+      run: |
+       mkdir -p ~/.ssh
+       echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+       chmod 600 ~/.ssh/id_rsa
+       ssh-keyscan <server-ip> >> ~/.ssh/known_hosts
+
+    - name: Test SSH Connection
+      run: ssh -o StrictHostKeyChecking=no akashvikram98@your.server.ip.address "echo Connected!"
+
