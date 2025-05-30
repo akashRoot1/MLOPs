@@ -6,10 +6,11 @@ jobs:
   test-ssh:
     runs-on: ubuntu-latest
     steps:
-    - name: Test SSH connection
+    - name: Test SSH connection to Swarm
       uses: appleboy/ssh-action@v0.1.7
       with:
         host: ${{ secrets.SWARM_HOST }}
-        username: ${{ secrets.SSH_USER }}
+        username: ${{ secrets.SWARM_USER }}
         key: ${{ secrets.SWARM_SSH_KEY }}
-        script: echo "SSH connection successful!"
+        script: echo "✅ SSH connection successful!"
+        debug: true
