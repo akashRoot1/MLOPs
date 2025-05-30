@@ -3,7 +3,8 @@ import pickle
 import numpy as np
 
 app = Flask(__name__)
-model = pickle.load(open('app/model/model.pkl', 'rb'))
+model_path = 'model/model.pkl'  # or the correct relative path inside the container
+model = pickle.load(open(model_path, 'rb'))
 
 @app.route('/')
 def home():
