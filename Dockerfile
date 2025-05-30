@@ -1,4 +1,5 @@
-
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
 # Install system dependencies needed for pandas/scikit-learn
 RUN apt-get update && apt-get install -y \
@@ -21,4 +22,5 @@ COPY . .
 EXPOSE 5000
 
 # Run the app
+CMD ["python", "app/app.py"]
 
