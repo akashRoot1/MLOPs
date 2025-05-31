@@ -2,7 +2,7 @@ name: Train Model
 
 on:
   push:
-    branches: [features]
+    branches: [production]
   pull_request:
 
 jobs:
