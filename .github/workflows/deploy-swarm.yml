@@ -3,7 +3,7 @@ name: Build and Deploy to Docker Swarm
 on:
   push:
     branches:
-      - features
+      - dev
 
 jobs:
   build-and-deploy:
